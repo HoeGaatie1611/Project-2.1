@@ -1,12 +1,2 @@
-# Project-2.1
-Project van periode 1, leerjaar 2. Het bouwen van een embedded system.
-
-Project Members:
-Mark Dissel
-Mark Horn
-Remand Knol
-Dennis Vrieling
-Jesse Tijsma
-
-Klas:
-ITV2A
+# Arduino Code
+Hier zal alle code van de Arduino Uno komen. Dit wordt geschreven in Arduino taal, en uitgevoerd in de Arduino software. Uiteindelijk moet een deel van de code uitgevoerd worden via de Python GUI. 

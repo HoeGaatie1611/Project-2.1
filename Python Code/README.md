@@ -1,12 +1,4 @@
-# Project-2.1
-Project van periode 1, leerjaar 2. Het bouwen van een embedded system.
+# Python Code
+Alle code voor Python en Python gerelateerde zaken.
 
-Project Members:
-Mark Dissel
-Mark Horn
-Remand Knol
-Dennis Vrieling
-Jesse Tijsma
-
-Klas:
-ITV2A
+Hierin zal onder andere de code komen voor de GUI.

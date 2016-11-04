@@ -1,12 +1,4 @@
-# Project-2.1
-Project van periode 1, leerjaar 2. Het bouwen van een embedded system.
+# Documentation
+Hier komen alle documentatie bestanden. Denk hier aan het verslag, de documentatie van het functioneel ontwerp en technisch ontwerp.
 
-Project Members:
-Mark Dissel
-Mark Horn
-Remand Knol
-Dennis Vrieling
-Jesse Tijsma
-
-Klas:
-ITV2A
+Dit zal vooral bestaan uit Word bestanden.
