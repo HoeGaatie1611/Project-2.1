@@ -5,6 +5,11 @@ const int rodeLed = 4;
 const int sensor = A0;
 const int triggerPort = 8;
 const int echoPort = 7;
+const int button1 = 9;
+const int button2 = 10;
+const int button3 = 11;
+int ingedrukt = 0;
+int autonoom =0;
 
 int sensormeten;
 int remand = 0;
@@ -24,17 +29,35 @@ int metingen = 0;
 void setup() {
 Serial.begin(9600);
 
+// ultrasonic input
 for(int pinNumber = 2; pinNumber < 5; pinNumber++) {
   pinMode(pinNumber, OUTPUT);
   digitalWrite(pinNumber, LOW);
 }
 pinMode( triggerPort, OUTPUT );
 pinMode( echoPort, INPUT );
+
+// 3 buttons input
+for(int pinNumber = 9; pinNumber < 12; pinNumber++) {
+  pinMode(pinNumber, OUTPUT);
+  digitalWrite(pinNumber, LOW);
+}
+pinMode( button1, INPUT );
+pinMode( button2, INPUT );
+pinMode( button3, INPUT );
+
 }
 
 void loop() {
-  sensormeten = analogRead(sensor);
+ //test
 
+
+ 
+  
+
+
+
+sensormeten = analogRead(sensor);
 Serial.print("Analog reading = ");
 Serial.print(sensormeten);
 Serial.println("Remand waarde: ");
@@ -57,7 +80,7 @@ Serial.println(remand);
   if(i == 10) {
     gemremand = (tijdremand / 10);
     tijdremand = 0;
-    Serial.print("Gemiddelde remand: ");
+    Serial.println("Gemiddelde remand: ");
     Serial.println(gemremand);
     i = 0;
   }
@@ -85,6 +108,8 @@ Serial.println(remand);
   else {
     delay(1000);
   }
+
+
 }
 
 void berekenAfstand() {
