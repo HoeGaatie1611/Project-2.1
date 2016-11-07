@@ -1,15 +1,26 @@
+import threading
 import time
-import serial as serial
+import serial
 
-def tryConnect():
-	try:
-		ser = serial.Serial('/dev/tty.usbserial', 9600)
-	except:
-		time.sleep(1000)
-		tryConnect()
+class SerialThread (threading.Thread):
 
-ser = None
-tryConnect()
+	ports = [None] * 5;
 
-while True:
-	print (ser)
+	def tryConnect(self):
+		for i in range(len(self.ports)):
+			try:			
+				self.ports[i] = serial.Serial(port="COM" + (i + 3),baudrate=9600)
+			except: self.ports[i] = None
+		
+		time.sleep(1)
+		self.tryConnect()
+
+	#
+		
+	def __init__(self, main):
+		self.main = main;
+		threading.Thread.__init__(self)
+
+	def run(self):
+		self.tryConnect()
+		
