@@ -1,3 +1,1 @@
-import serial
-
-input("Hey")
+import serialThread
