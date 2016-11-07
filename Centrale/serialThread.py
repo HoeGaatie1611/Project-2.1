@@ -6,14 +6,22 @@ class SerialThread (threading.Thread):
 
 	ports = [None] * 5;
 
-	def tryConnect(self):
+	def readCommand(self, port):
+		length = ord(port.read(1).decode('utf-8')) # Get command length
+		return port.read(length).decode('utf-8') # Get entire command with length
+		
+	def update(self): # Connect, disconnect and process commands
 		for i in range(len(self.ports)):
-			try:			
-				self.ports[i] = serial.Serial(port="COM" + (i + 3),baudrate=9600)
+			try:		
+				if self.ports[i] == None:
+					self.ports[i] = serial.Serial(port="COM" + str(i + 3),baudrate=9600) # Connect to board
+					
+				else:
+					print("COM" + str(i + 3) + ": " + self.readCommand(self.ports[i]))
+					
 			except: self.ports[i] = None
 		
-		time.sleep(1)
-		self.tryConnect()
+		threading.Timer(1, self.update).start() # Try again in 1 second
 
 	#
 		
@@ -22,5 +30,5 @@ class SerialThread (threading.Thread):
 		threading.Thread.__init__(self)
 
 	def run(self):
-		self.tryConnect()
+		self.update()
 		

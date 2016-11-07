@@ -4,11 +4,9 @@ import time
 class GUIThread (threading.Thread):
 		
 	def printPorts(self):
-		print(self.main.serialThread.ports)
+		#print(self.main.serialThread.ports)
 		
-		time.sleep(1)
-		self.printPorts()
-
+		threading.Timer(1, self.printPorts).start()
 	#
 		
 	def __init__(self, main):
