@@ -19,14 +19,18 @@ class SerialThread (threading.Thread):
 					except: continue
 					
 				else:
-					print("COM" + str(i) + ": " + self.readCommand(self.ports[i])) # Print board and recieved command
+					commandString = self.readCommand(self.ports[i]) # Print board and recieved command
+					command = commandString.split(" ")[0]
+					data = int(commandString.split(" ")[1])
 					
+					self.main.commandHandler.processCommand(self.ports[i], command, data)
+
 			except: self.ports[i] = None
 				
 		threading.Timer(1, self.update).start() # Try again in 1 second
 
 	#
-		
+	
 	def __init__(self, main):
 		self.main = main;
 		threading.Thread.__init__(self)

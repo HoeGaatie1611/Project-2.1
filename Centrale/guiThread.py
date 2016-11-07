@@ -4,7 +4,7 @@ import time
 class GUIThread (threading.Thread):
 		
 	def printPorts(self):
-		#print(self.main.serialThread.ports)
+		print(self.main.serialThread.ports) # Print all ports
 		
 		threading.Timer(1, self.printPorts).start()
 	#

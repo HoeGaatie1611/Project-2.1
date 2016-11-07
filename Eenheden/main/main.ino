@@ -5,14 +5,16 @@ void setup(void) {
 
 int total = 0;
 
-void writeSerial(String str) {
-  Serial.write(str.length());
-  Serial.print(str);
+void sendCommand(String command, int data) {
+  String commandString = command + " " + data;
+  
+  Serial.write(commandString.length());
+  Serial.print(commandString);
 }
 
 void loop(void) {
   total++;
-  writeSerial("hello" + String(total));
+  sendCommand("testCommand", total);
   
   delay(1000);
 }
