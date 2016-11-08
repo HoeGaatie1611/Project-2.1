@@ -5,6 +5,7 @@ import serial
 class PortThread (threading.Thread):
 
 	def disconnect(self):
+		print(self.port.port + " disconnected")
 		self.main.serialThread.disconnect(self.id)
 
 	def readCommand(self):
@@ -16,7 +17,7 @@ class PortThread (threading.Thread):
 			
 			self.main.commandHandler.processCommand(self, command, data)
 			
-			self.readCommand()
+			self.readCommand() # Recursive
 			
 		except:
 			self.disconnect() # If could not read command assume disconnect
@@ -33,6 +34,7 @@ class PortThread (threading.Thread):
 		self.main = main
 		threading.Thread.__init__(self)
 
-	def run(self):	
+	def run(self):
+		print(self.port.port + " connected")
 		self.readCommand()
 		
