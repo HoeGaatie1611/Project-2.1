@@ -201,7 +201,7 @@ def Application():
 	
 	
 	"""Add tabs to frame""" #Misschien veranderd.....
-	print("Je moeder")
+	print("test")
 	tabs.add(page1, text="    Index    ")
 	tabs.add(page2, text='  Arduino 1  ')
 	tabs.add(page3, text='  Arduino 2  ')
@@ -215,6 +215,12 @@ def Application():
 		print(fNewList)
 		tabs.add(Value, text="  Arduino " + str(fNewList[3]) + "  ") #BUG: Hij wilt niet de goede tab weer toevoegen. Hij voegt namelijk een random waarde toe!
 		tabs.pack(expand=1, fill="both")
+	
+	#Favicon / map zelf aanpassen aan path
+	#root.iconbitmap(r'Z:\Project2.1\Project-2.1\Python Code\favicon.ico')
+	
+	#Fixedwindow / niet resizable
+	root.resizable(width=False, height=False)
 	
 	"""Run the program"""
 	root.mainloop()
