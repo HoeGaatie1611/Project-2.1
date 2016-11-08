@@ -25,18 +25,18 @@ def Application():
 		master.title('EZ code')
 		Label(master, text="Minimale Waarde:").grid(row=0,column=1)
 
-		e2 = Checkbutton(master, text="Arduino 1", command= lambda: hideArduino(page2))
-		e3 = Checkbutton(master, text="Arduino 2", command= lambda: hideArduino(page3))
-		e4 = Checkbutton(master, text="Arduino 3", command= lambda: hideArduino(page4))
-		e5 = Checkbutton(master, text="Arduino 4", command= lambda: hideArduino(page5))
-		e6 = Checkbutton(master, text="Arduino 5", command= lambda: hideArduino(page6))
+		e2 = Checkbutton(master, text="Arduino 1", command= lambda: hideArduino(page2, 2))
+		e3 = Checkbutton(master, text="Arduino 2", command= lambda: hideArduino(page3, 3))
+		e4 = Checkbutton(master, text="Arduino 3", command= lambda: hideArduino(page4, 4))
+		e5 = Checkbutton(master, text="Arduino 4", command= lambda: hideArduino(page5, 5))
+		e6 = Checkbutton(master, text="Arduino 5", command= lambda: hideArduino(page6, 6))
 		
 
-		e2.grid(row=1, column=1)
-		e3.grid(row=2, column=1)
-		e4.grid(row=3, column=1)
-		e5.grid(row=4, column=1)
-		e6.grid(row=5, column=1)
+		e2.grid(row=1, column=1, sticky=W)
+		e3.grid(row=2, column=1, sticky=W)
+		e4.grid(row=3, column=1, sticky=W)
+		e5.grid(row=4, column=1, sticky=W)
+		e6.grid(row=5, column=1, sticky=W)
 		
 		#e1 = e1
 		#e2 = e2
@@ -47,13 +47,13 @@ def Application():
 	
 	
 	"""Hide the tab"""
-	def hideArduino(Value): #Veranderd
+	def hideArduino(Value, paginaNR): #Veranderd
 		#global ArduinoOn
 		print("Je moeder = " + str(Value))
 		try:
 			tabs.forget(Value)
 		except TclError:
-			showArduino(Value)
+			showArduino(Value, paginaNR)
 			#tabs.add(Value, text="  Arduino ")
 			#tabs.pack(expand=1, fill="both")
 		
@@ -91,9 +91,9 @@ def Application():
 	"""Configure first tab"""
 	page1 = ttk.Frame(tabs)
 	
-	button1 = tk.Button(page1)
-	button1.configure(text = "Disable Arduino 1", command=  hideArduino)
-	button1.grid()
+	#button1 = tk.Button(page1)
+	#button1.configure(text = "Disable Arduino 1")
+	#button1.grid()
 	
 	button2 = tk.Button(page1)
 	button2.configure(text = "Nuttelozen knop", command=set_values)
@@ -210,10 +210,10 @@ def Application():
 	tabs.add(page6, text="  Arduino 5  ")
 	tabs.pack(expand=1, fill="both")
 
-	def showArduino(Value): #Nieuwe regel / veranderd
+	def showArduino(Value, paginaNR): #Nieuwe regel / veranderd
 		fNewList = list(str(Value)) 
 		print(fNewList)
-		tabs.add(Value, text="  Arduino " + str(fNewList[3]) + "  ") #BUG: Hij wilt niet de goede tab weer toevoegen. Hij voegt namelijk een random waarde toe!
+		tabs.add(Value, text="  Arduino " + str(paginaNR-1) + "  ") #BUG: Hij wilt niet de goede tab weer toevoegen. Hij voegt namelijk een random waarde toe!
 		tabs.pack(expand=1, fill="both")
 	
 	"""Run the program"""
