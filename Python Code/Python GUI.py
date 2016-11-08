@@ -22,6 +22,7 @@ def Application():
 	
 	
 	
+	
 	"""Hide the tab"""
 	def hideArduino():
 		global ArduinoOn
