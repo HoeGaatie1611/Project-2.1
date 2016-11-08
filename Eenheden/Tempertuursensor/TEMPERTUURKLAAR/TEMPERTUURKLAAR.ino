@@ -4,7 +4,7 @@
   Doel: Een temperatuursensor voor rolluiken, werkt zowel autonoom als via een centrale.
 
   @author Mark Dissel
-  @version 7.2 08/11/2016
+  @version 6.2 08/11/2016
 */
 
 // Initialiseer de poorten
@@ -49,7 +49,7 @@ void setup() {
   pinMode( echoPort, INPUT );
 }
 
-// Hier begint de loop
+// Hier begint de loop 
 void loop() {
   if(autonoom == 0) {
     digitalWrite(autonoomLed, HIGH);
@@ -57,7 +57,7 @@ void loop() {
   else if(autonoom == 1) {
     digitalWrite(autonoomLed, LOW);
   }
-
+  
   loopcounter++; //Count loops
     if(digitalRead(knop1) == 1 && inofuitrollen == 0) {
     if(!knop1pressed) {
@@ -66,7 +66,7 @@ void loop() {
         autonoom = 0;
         knop2actief = 0;
         knop3actief = 0;
-
+        
     } else if(autonoom == 0) {
         autonoom = 1;
     }
@@ -108,7 +108,7 @@ void loop() {
     if(afstand < 0) {
       afstand = 0;
     }
-
+    
     if(autonoom == 0) {
       int sensorWaarde = analogRead(sensor);
       float voltage = (sensorWaarde/1024.0) * 5;
@@ -127,16 +127,16 @@ void loop() {
         if(gemTemperatuur > basisTemperatuur && uitgerold == 0 && gemTemperatuur != 0) {
         uitrollen();
       }
-
+      
       // Als de gemiddelde temperatuur laag ligt, wordt er ingerold.
       if(gemTemperatuur <= basisTemperatuur && ingerold == 0 && gemTemperatuur != 0) {
         inrollen();
-      }
+      }    
     }
-
+    
   }
 
-
+  
   if(ingerold == 1) {
     digitalWrite(groeneLed, HIGH);
     digitalWrite(geleLed, LOW);
@@ -145,7 +145,7 @@ void loop() {
     digitalWrite(rodeLed, HIGH);
     digitalWrite(geleLed, LOW);
   }
-
+  
   if(inofuitrollen == 1) {
     delay (50);
   }
@@ -159,9 +159,9 @@ void berekenAfstand() {
   digitalWrite(triggerPort, HIGH);    // Stuur nu een signaal van 10 ms naar de triggerport.
   delayMicroseconds( 10 );
   digitalWrite(triggerPort, LOW);  // zet de triggerpoort weer op 0.
-
+ 
   int duration = pulseIn(echoPort, HIGH); // Sla de duur van de afstand op in variabele duration
-
+ 
   afstand = 0.034 * duration / 2;  // Snelheid geluid = 340 m/s en 0.034 cm/us, en delen door twee, doordat de afstand twee keer overbrugd wordt.
 }
 
@@ -179,7 +179,7 @@ void inrollen() {
     inofuitrollen = 0;
   }
 }
-
+    
 void uitrollen() {
   inofuitrollen = 1;
   ingerold = 0;
@@ -196,7 +196,8 @@ void uitrollen() {
 
 void sendCommand(String command, int data) {
   String commandString = command + " " + data;
-
+  
   Serial.write(commandString.length());
   Serial.print(commandString);
 }
+
