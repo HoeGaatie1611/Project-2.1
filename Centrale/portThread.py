@@ -7,7 +7,8 @@ class PortThread (threading.Thread):
 	def disconnect(self):
 		print(self.port.port + " disconnected")
 		self.main.serialThread.disconnect(self.id)
-
+		self.main.guiThread.removePage(self.id)
+		
 	def readCommand(self):
 		try:
 			length = ord(self.port.read(1).decode('utf-8')) # Get command length
@@ -36,5 +37,6 @@ class PortThread (threading.Thread):
 
 	def run(self):
 		print(self.port.port + " connected")
+		self.main.guiThread.createPage(self.id)
 		self.readCommand()
 		

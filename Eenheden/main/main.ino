@@ -11,7 +11,7 @@ int total = 0;
 void loop(void) {
   delay(1000);
   total++;
-  //sendCommand("testCommand", total);
+  sendCommand("testCommand", total);
 
   if(total % 2 == 0) {
     //digitalWrite(13, HIGH);
