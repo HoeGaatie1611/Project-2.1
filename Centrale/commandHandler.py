@@ -1,8 +1,8 @@
 
 class CommandHandler ():
 
-	def processCommand(self, port, command, data):
-		print(port.port + " sent command: '" + command + "' with data: '" + str(data) + "'")
+	def processCommand(self, portThread, command, data):
+		print(portThread.port.port + " sent command: '" + command + "' with data: '" + str(data) + "'")
 		
 	#
 		
