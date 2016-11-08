@@ -16,6 +16,6 @@ void loop(void) {
   total++;
   sendCommand("testCommand", total);
   
-  delay(1000);
+  delay(10000);
 }
 
