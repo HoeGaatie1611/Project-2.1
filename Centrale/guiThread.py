@@ -28,28 +28,27 @@ class GUIThread (threading.Thread):
 			self.pages.append(None)
 			
 		page = ttk.Frame(self.tabs)
-		
 		tab = ttk.Notebook(page)
-		tab1 = ttk.Frame(self.tabs)
-		tab2 = ttk.Frame(self.tabs)
 
-		label = Label(tab1, text="Centrale 2.1", font=self.boldFont, anchor="nw")
-		label.pack(expand=0, fill="both")
-		
-		tab.add(tab1, text = "Temperatuursensor")
-		tab.add(tab2, text = "Lichtsensoren")
+		self.title = Label(tab, text="Loading...", font=self.boldFont, anchor="nw")
+		self.title.pack(expand=0, fill="both")		
 		tab.pack(expand=1, fill="both")
 
-		canvas1 = tk.Canvas(tab1, width=800, height=325,bg="#9F81F7")
-		canvas1.pack(padx=20, pady=20, side="top", anchor="nw")
-		
-		canvas2 = tk.Canvas(tab2, width=800, height=325,bg="red")
-		canvas2.pack(padx=20, pady=20, side="top", anchor="nw")
+		canvas = tk.Canvas(tab, width=800, height=325,bg="#9F81F7")
+		canvas.pack(padx=20, pady=20, side="top", anchor="nw")
 		
 		self.tabs.add(page, text='  Arduino ' + str(id) + '  ')
 		self.pages[id] = page
 		
 		return page
+		
+	def setPageType(self, portThread, type):
+		page = self.pages[portThread.id]
+		
+		if type == "temperature":
+			return # TODO
+		elif type == "remand":
+			return	
 		
 	def loadGUI(self):
 		pages = []
@@ -71,10 +70,7 @@ class GUIThread (threading.Thread):
 		
 		"""Configure main tab"""
 		mainPage = ttk.Frame(self.tabs)
-		
-		"""Add tabs to frame"""
 		self.tabs.add(mainPage, text="    Home    ")
-			
 		self.tabs.pack(expand=1, fill="both")
 		
 		#Favicon / map zelf aanpassen aan path

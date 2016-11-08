@@ -13,7 +13,6 @@ class Main ():
 		self.guiThread.start()
 		
 		time.sleep(0.1) # Wait for gui to boot
-		
 
 		self.serialThread = SerialThread(self)
 		self.serialThread.start()
