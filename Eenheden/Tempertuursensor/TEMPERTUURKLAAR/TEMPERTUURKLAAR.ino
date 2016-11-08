@@ -24,7 +24,7 @@ int knop2pressed = 0;
 int knop3pressed = 0;
 
 // Defineer vriabelen
-const float basisTemperatuur = 15.0;
+int basisTemperatuur = 15;
 int ingerold = 0;
 int uitgerold = 0;
 int afstand = 30;
@@ -70,7 +70,7 @@ void loop() {
     } else if(autonoom == 0) {
         autonoom = 1;
     }
-      Serial.println("knop 1 is ingedrukt");
+      sendCommand("autonoomPressed", autonoom);
     }
   } else {
     knop1pressed = 0;
@@ -81,7 +81,6 @@ void loop() {
       knop2pressed = 1;
       knop2actief = 1;
       knop3actief = 0;
-      Serial.println("knop 2 is ingedrukt");
     }
   } else {
     knop2pressed = 0;
@@ -91,7 +90,6 @@ void loop() {
       knop3pressed = 1;
       knop2actief = 0;
       knop3actief = 1;
-      Serial.println("knop 3 is ingedrukt");
     }
   } else {
     knop3pressed = 0;
@@ -104,6 +102,8 @@ void loop() {
     uitrollen();
   }
   if(loopcounter % 10 == 1) { //Every 1s
+    sendCommand("baseTemperature", basisTemperatuur);
+    sendCommand("inofuitrollen", inofuitrollen);
     berekenAfstand();
     if(afstand < 0) {
       afstand = 0;
@@ -114,8 +114,6 @@ void loop() {
       float voltage = (sensorWaarde/1024.0) * 5;
       float temperatuur = ((voltage * 1000) - 500) / 10;
       i++;
-      Serial.print("de tempertuur is: ");
-      Serial.println(temperatuur);
       tijdTemperatuur += temperatuur;
         if(i == 40) {
           gemTemperatuur = (tijdTemperatuur / 40);
@@ -177,6 +175,7 @@ void inrollen() {
   if (afstand > 50 && afstand != 0) {
     ingerold = 1;
     inofuitrollen = 0;
+    sendCommand("ingerold", ingerold);
   }
 }
     
@@ -191,6 +190,7 @@ void uitrollen() {
   if(afstand < 5 && afstand != 0) {
     uitgerold = 1;
     inofuitrollen = 0;
+    sendCommand("uitgerold", uitgerold);
   }
 }
 

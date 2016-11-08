@@ -1,4 +1,5 @@
 """Import Stuff..."""
+//update
 from tkinter import ttk
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
@@ -166,7 +167,12 @@ class Application():
 		self.tabs.add(self.page5, text="  Arduino 4  ")
 		self.tabs.add(self.page6, text="  Arduino 5  ")
 		self.tabs.pack(expand=1, fill="both")
-
+		
+		#Favicon / map zelf aanpassen aan path
+		#root.iconbitmap(r'Z:\Project2.1\Project-2.1\Python Code\favicon.ico')
+	
+		#Fixedwindow / niet resizable
+		root.resizable(width=False, height=False)
 
 
 
