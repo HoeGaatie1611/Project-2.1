@@ -16,6 +16,9 @@ class SerialThread (threading.Thread):
 					self.ports[id] = portThread
 				except: continue
 				
+			else:
+				self.ports[id].sendCommand("ledOn", 13)
+			
 		threading.Timer(1, self.update).start() # Try again in 1 second
 
 	def disconnect(self, id):

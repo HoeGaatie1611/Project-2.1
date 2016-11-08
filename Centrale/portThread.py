@@ -21,6 +21,10 @@ class PortThread (threading.Thread):
 		except:
 			self.disconnect() # If could not read command assume disconnect
 		
+	def sendCommand(self, command, data):
+		commandString = command + " " + str(data)
+		
+		self.port.write(commandString.encode())
 	#
 		
 	def __init__(self, port, id, main):
@@ -29,6 +33,6 @@ class PortThread (threading.Thread):
 		self.main = main
 		threading.Thread.__init__(self)
 
-	def run(self):
+	def run(self):	
 		self.readCommand()
 		
