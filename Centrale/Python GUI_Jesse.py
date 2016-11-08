@@ -217,7 +217,7 @@ def Application():
 		tabs.pack(expand=1, fill="both")
 	
 	#Favicon / map zelf aanpassen aan path
-	#root.iconbitmap(r'Z:\Project2.1\Project-2.1\Python Code\favicon.ico')
+	root.iconbitmap(r'\Project2.1\Project-2.1\Python Code\favicon.ico')
 	
 	#Fixedwindow / niet resizable
 	root.resizable(width=False, height=False)
