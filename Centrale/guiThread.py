@@ -65,8 +65,11 @@ class GUIThread (threading.Thread):
 		
 		#Base values and roll buttons
 		page.baseVal = IntVar()
+		
 		page.rollStatus = StringVar()
-			
+		page.rollStatusLabel = Label(page, textvariable=page.rollStatus, font=self.normalFont, anchor="nw")
+		self.placeItem(page.rollStatusLabel, 5, 0)
+		
 		#Autonoom mode
 		page.mode = StringVar()
 		page.modeLabel = Label(page, textvariable=page.mode, font=self.normalFont, anchor="nw")
@@ -104,10 +107,8 @@ class GUIThread (threading.Thread):
 		page.mode.set("Mode: Sensor")
 	
 	def addRollInput(self, page):
-		page.rollStatusLabel = Label(page, textvariable=page.rollStatus, font=self.normalFont, anchor="nw")
 		page.rollIn = tk.Button(page, text='Roll in', width=16, command=lambda: self.port.sendCommand("rollIn", 0))
 		page.rollOut = tk.Button(page, text='Roll out', width=16, command=lambda: elf.port.sendCommand("rollOut", 0))
-		self.placeItem(page.rollStatusLabel, 1, 1)
 		self.placeItem(page.rollIn, 2, 1)
 		self.placeItem(page.rollOut, 3, 1)
 		page.mode.set("Mode: Manual")
@@ -121,7 +122,6 @@ class GUIThread (threading.Thread):
 		
 	def removeRollInput(self, page):
 		try:
-			page.rollStatusLabel.destroy()
 			page.rollIn.destroy()
 			page.rollOut.destroy()
 		except: return
