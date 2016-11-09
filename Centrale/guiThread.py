@@ -127,7 +127,7 @@ class GUIThread (threading.Thread):
 		except: return
 		
 	# GUI methods
-	def placeItem(self, item, row, colomn):
+	def placeItem(self, item, row, colomn): # get x and y for buttons and labels for a nice grid layout under graph
 		item.place(x=(5 + 130 * colomn), y=(390 + 30 * row))
 		
 	def setTitle(self, page, title):
