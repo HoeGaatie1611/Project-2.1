@@ -37,7 +37,7 @@ class PortThread (threading.Thread):
 		threading.Thread.__init__(self)
 
 	def run(self):
-		print(self.port.port + " connected")
+		print(self.port.port + " connected")		
 		self.main.guiThread.createPage(self.id)
 		self.readCommand()
 		

@@ -10,10 +10,12 @@ class CommandHandler ():
 		
 		if(command == "baseTemperature"):
 			self.main.guiThread.setPageType(portThread, "temperature")
-		
+			page.newBaseVal.set(data)
+			
 		elif(command == "baseRemand"):
 			self.main.guiThread.setPageType(portThread, "remand")
-		
+			page.newBaseVal.set(data)
+			
 	#
 		
 	def __init__(self, main):

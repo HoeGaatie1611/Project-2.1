@@ -10,6 +10,20 @@ class GUIThread (threading.Thread):
 		
 	pages = []
 		
+	def isInt(x):
+		try:
+			x = int(x)
+			return True
+		except:
+			return False
+		
+	def pageCount(self):
+		amount = 0
+		for i in range(len(self.pages)):
+			if self.pages[i] != None:
+				amount+=1
+		return amount
+	
 	def quit(self):
 		self.root.destroy()
 	
@@ -28,31 +42,59 @@ class GUIThread (threading.Thread):
 			self.pages.append(None)
 			
 		page = ttk.Frame(self.tabs)
-		tab = ttk.Notebook(page)
-
-		page.title = Label(tab, text="Loading...", font=self.boldFont, anchor="nw")
-		page.title.pack(expand=0, fill="both")		
-		tab.pack(expand=1, fill="both")
-
-		#canvas = tk.Canvas(tab, width=800, height=325,bg="#9F81F7")
-		#canvas.pack(padx=20, pady=20, side="top", anchor="nw")
+		page.id = id
 		
-		page.text = tk.Text(tab, width=800, height=325)
-		page.text.pack(padx=20, pady=20, side="top", anchor="nw")
-				
-		self.tabs.add(page, text='  Arduino ' + str(id) + '  ')
+		name = self.main.configHandler.get("COM" + str(id) + "name")
+		if name == None:
+			name = "Eenheid"		
+		
+		#canvas = tk.Canvas(tab, width=800, height=325, bg="#9F81F7")
+		
+		page.text = tk.Text(page, width=150, height=20)
+		
+		page.title = StringVar()
+		page.title.set("Loading...")
+		page.titleLabel = Label(page, textvariable=page.title, font=self.boldFont, anchor="nw")
+		page.titleLabel.place(x=0, y=330)
+		
+		page.newName = StringVar()
+		page.newName.set(name)
+		page.newNameEntry = tk.Entry(page, textvariable=page.newName, width=20)
+		self.placeItem(page.newNameEntry, 0, 0)
+		
+		page.setNewName = tk.Button(page, text='Save Name', width=16, command=lambda: self.setTitle(page, page.newName.get()))
+		self.placeItem(page.setNewName, 1, 0)
+		
+		page.newBaseVal = StringVar()
+		page.newBaseValEntry = tk.Entry(page, textvariable=page.newBaseVal, width=20)
+		self.placeItem(page.newBaseValEntry, 0, 1)
+
+		page.setNewBaseVal = tk.Button(page, text='Set Base', width=16)
+		self.placeItem(page.setNewBaseVal, 1, 1)
+
+		self.tabs.add(page, text=name)
 		self.pages[id] = page
 		
 		return page
+		
+	def placeItem(self, item, row, colomn):
+		item.place(x=(5 + 125 * colomn + 5 * colomn), y=(390 + 20 * row + 5 * row))
+		
+	def setTitle(self, page, title):
+		self.tabs.tab(page, text=title)
+		self.main.configHandler.set("COM" + str(page.id) + "name", title)
 		
 	def setPageType(self, portThread, type):
 		page = self.pages[portThread.id]
 		
 		if type == "temperature":
-			return # TODO
+			page.title.set("Temperature")
+			page.text.place(x=0, y=0)
+			
 		elif type == "remand":
-			return	
-		
+			page.title.set("Remand")
+			page.text.place(x=0, y=0)
+	
 	def addText(self, field, text):
 		field.insert(END, text + '\n')
 		
