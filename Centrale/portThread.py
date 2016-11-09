@@ -18,7 +18,8 @@ class PortThread (threading.Thread):
 			
 			self.main.commandHandler.processCommand(self, command, data)
 			
-			self.readCommand() # Recursive
+			threading.Timer(0.01, self.readCommand).start() # Recurvive
+			return
 			
 		except:
 			self.disconnect() # If could not read command assume disconnect

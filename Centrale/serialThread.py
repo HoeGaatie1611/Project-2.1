@@ -5,7 +5,7 @@ from portThread import PortThread
 
 class SerialThread (threading.Thread):
 
-	ports = [None] * 100;
+	ports = [None] * 20;
 			
 	def update(self): # Connect, disconnect and process commands
 		for id in range(len(self.ports)):

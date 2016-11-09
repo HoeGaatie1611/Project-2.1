@@ -30,13 +30,16 @@ class GUIThread (threading.Thread):
 		page = ttk.Frame(self.tabs)
 		tab = ttk.Notebook(page)
 
-		self.title = Label(tab, text="Loading...", font=self.boldFont, anchor="nw")
-		self.title.pack(expand=0, fill="both")		
+		page.title = Label(tab, text="Loading...", font=self.boldFont, anchor="nw")
+		page.title.pack(expand=0, fill="both")		
 		tab.pack(expand=1, fill="both")
 
-		canvas = tk.Canvas(tab, width=800, height=325,bg="#9F81F7")
-		canvas.pack(padx=20, pady=20, side="top", anchor="nw")
+		#canvas = tk.Canvas(tab, width=800, height=325,bg="#9F81F7")
+		#canvas.pack(padx=20, pady=20, side="top", anchor="nw")
 		
+		page.text = tk.Text(tab, width=800, height=325)
+		page.text.pack(padx=20, pady=20, side="top", anchor="nw")
+				
 		self.tabs.add(page, text='  Arduino ' + str(id) + '  ')
 		self.pages[id] = page
 		
@@ -49,6 +52,9 @@ class GUIThread (threading.Thread):
 			return # TODO
 		elif type == "remand":
 			return	
+		
+	def addText(self, field, text):
+		field.insert(END, text + '\n')
 		
 	def loadGUI(self):
 		pages = []

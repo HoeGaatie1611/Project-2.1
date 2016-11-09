@@ -9,7 +9,7 @@ void setup(void) {
 int total = 0;
 
 void loop(void) {
-  delay(1000);
+  delay(50);
   total++;
   sendCommand("testCommand", total);
 
