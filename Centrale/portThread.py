@@ -10,7 +10,7 @@ class PortThread (threading.Thread):
 		self.main.guiThread.removePage(self.id)
 		
 	def readCommand(self):
-		try:
+		#try:
 			length = ord(self.port.read(1).decode('utf-8')) # Get command length
 			commandString = self.port.read(length).decode('utf-8') # Get entire command with length
 			command = commandString.split(" ")[0]
@@ -18,11 +18,11 @@ class PortThread (threading.Thread):
 			
 			self.main.commandHandler.processCommand(self, command, data)
 			
-			threading.Timer(0.01, self.readCommand).start() # Recurvive
+			threading.Timer(0.01, self.readCommand).start() # Recursive
 			return
 			
-		except:
-			self.disconnect() # If could not read command assume disconnect
+		#except:
+		#	self.disconnect() # If could not read command assume disconnect
 		
 	def sendCommand(self, command, data):
 		commandString = command + " " + str(data)
@@ -37,7 +37,7 @@ class PortThread (threading.Thread):
 		threading.Thread.__init__(self)
 
 	def run(self):
-		print(self.port.port + " connected")		
+		print(self.port.port + " connected")
 		self.main.guiThread.createPage(self.id)
 		self.readCommand()
 		

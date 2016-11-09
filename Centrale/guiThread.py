@@ -10,13 +10,7 @@ class GUIThread (threading.Thread):
 		
 	pages = []
 		
-	def isInt(x):
-		try:
-			x = int(x)
-			return True
-		except:
-			return False
-		
+	#Page methods
 	def pageCount(self):
 		amount = 0
 		for i in range(len(self.pages)):
@@ -38,6 +32,8 @@ class GUIThread (threading.Thread):
 		self.pages[id] = None
 	
 	def createPage(self, id):
+		self.port = self.main.serialThread.ports[id]
+		
 		while(len(self.pages) <= id):
 			self.pages.append(None)
 			
@@ -51,7 +47,9 @@ class GUIThread (threading.Thread):
 		#canvas = tk.Canvas(tab, width=800, height=325, bg="#9F81F7")
 		
 		page.text = tk.Text(page, width=150, height=20)
+		page.text.place(x=0, y=0)
 		
+		#Name
 		page.title = StringVar()
 		page.title.set("Loading...")
 		page.titleLabel = Label(page, textvariable=page.title, font=self.boldFont, anchor="nw")
@@ -65,20 +63,72 @@ class GUIThread (threading.Thread):
 		page.setNewName = tk.Button(page, text='Save Name', width=16, command=lambda: self.setTitle(page, page.newName.get()))
 		self.placeItem(page.setNewName, 1, 0)
 		
-		page.newBaseVal = StringVar()
-		page.newBaseValEntry = tk.Entry(page, textvariable=page.newBaseVal, width=20)
-		self.placeItem(page.newBaseValEntry, 0, 1)
-
-		page.setNewBaseVal = tk.Button(page, text='Set Base', width=16)
-		self.placeItem(page.setNewBaseVal, 1, 1)
-
+		#Base values and roll buttons
+		page.baseVal = IntVar()
+		page.rollStatus = StringVar()
+			
+		#Autonoom mode
+		page.mode = StringVar()
+		page.modeLabel = Label(page, textvariable=page.mode, font=self.normalFont, anchor="nw")
+		self.placeItem(page.modeLabel, 0, 1)
+		
+		page.changeMode = tk.Button(page, text='Change mode', width=16, command=lambda: self.port.sendCommand("autonoom", 1 if page.autonoom == 0 else 0))
+		self.placeItem(page.changeMode, 5, 1)
+		
+		page.autonoom = 0
+		self.addBaseInput(page)
+		
+		#Max roll distance
+		page.maxRoll = IntVar()
+		page.maxRollTitleLabel = Label(page, text="Max roll distance", font=self.normalFont, anchor="nw")
+		page.maxRollLabel = Label(page, textvariable=page.maxRoll, font=self.normalFont, anchor="nw")
+		page.incMaxRoll = tk.Button(page, text='Increase', width=16, command=lambda: self.port.sendCommand("incMaxRoll", 0))
+		page.decMaxRoll = tk.Button(page, text='Decrease', width=16, command=lambda: self.port.sendCommand("decMaxRoll", 0))
+		self.placeItem(page.maxRollTitleLabel, 0, 2)
+		self.placeItem(page.maxRollLabel, 1, 2)
+		self.placeItem(page.incMaxRoll, 2, 2)
+		self.placeItem(page.decMaxRoll, 3, 2)
+		
 		self.tabs.add(page, text=name)
 		self.pages[id] = page
 		
 		return page
 		
+	def addBaseInput(self, page):
+		page.baseValLabel = Label(page, textvariable=page.baseVal, font=self.normalFont, anchor="nw")
+		page.incBase = tk.Button(page, text='Increase', width=16, command=lambda: self.port.sendCommand("incBase", 0))
+		page.decBase = tk.Button(page, text='Decrease', width=16, command=lambda: self.port.sendCommand("decBase", 0))
+		self.placeItem(page.baseValLabel, 1, 1)
+		self.placeItem(page.incBase, 2, 1)
+		self.placeItem(page.decBase, 3, 1)
+		page.mode.set("Mode: Sensor")
+	
+	def addRollInput(self, page):
+		page.rollStatusLabel = Label(page, textvariable=page.rollStatus, font=self.normalFont, anchor="nw")
+		page.rollIn = tk.Button(page, text='Roll in', width=16, command=lambda: self.port.sendCommand("rollIn", 0))
+		page.rollOut = tk.Button(page, text='Roll out', width=16, command=lambda: elf.port.sendCommand("rollOut", 0))
+		self.placeItem(page.rollStatusLabel, 1, 1)
+		self.placeItem(page.rollIn, 2, 1)
+		self.placeItem(page.rollOut, 3, 1)
+		page.mode.set("Mode: Manual")
+		
+	def removeBaseInput(self, page):
+		try:
+			page.baseValLabel.destroy()
+			page.incBase.destroy()
+			page.decBase.destroy()
+		except: return
+		
+	def removeRollInput(self, page):
+		try:
+			page.rollStatusLabel.destroy()
+			page.rollIn.destroy()
+			page.rollOut.destroy()
+		except: return
+		
+	# GUI methods
 	def placeItem(self, item, row, colomn):
-		item.place(x=(5 + 125 * colomn + 5 * colomn), y=(390 + 20 * row + 5 * row))
+		item.place(x=(5 + 130 * colomn), y=(390 + 30 * row))
 		
 	def setTitle(self, page, title):
 		self.tabs.tab(page, text=title)

@@ -11,13 +11,8 @@ int total = 0;
 void loop(void) {
   delay(50);
   total++;
+  
   sendCommand("testCommand", total);
-
-  if(total % 2 == 0) {
-    //digitalWrite(13, HIGH);
-  } else {
-    //digitalWrite(13, LOW);
-  }
 }
 
 void sendCommand(String command, int data) {

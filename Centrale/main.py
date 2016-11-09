@@ -14,8 +14,8 @@ class Main ():
 		self.guiThread = GUIThread(self)
 		self.guiThread.start()
 		
-		time.sleep(0.1) # Wait for gui to boot
-
+		time.sleep(1)
+		
 		self.serialThread = SerialThread(self)
 		self.serialThread.start()
 	#
