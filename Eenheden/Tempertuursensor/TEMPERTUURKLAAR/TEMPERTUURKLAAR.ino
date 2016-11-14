@@ -52,7 +52,6 @@ int buttonChanged = 0;
 int isError = 0;
 int incOrDec = 0;
 int incOrDecPressed = 0;
-int autonoomPressed = 0;
 int maxRoll = 50;
 
 // Start initialisatie loop
@@ -119,6 +118,7 @@ void loop() {
   // Hier wordt de naam van de data op het scherm getoond
   if (buttonPressed == 1) {
     String gemTemp = String(gemTemperatuur);
+    module.clearDisplay();
     module.setDisplayToString("GEMI " + gemTemp);
   }
   if (buttonPressed == 2) {
@@ -128,6 +128,7 @@ void loop() {
     }
     else if (isError == 0) {
       String distance = String(afstand);
+      module.clearDisplay();
       module.setDisplayToString("AFST " + distance);
     }
   }
@@ -174,12 +175,15 @@ void loop() {
     knop3pressed = 0;
   }
 
-  if (knop2actief == 1 && ingerold != 1 ) {
-    inrollen();
+  if (autonoom == 1) {
+    if (knop2actief == 1 && ingerold != 1 ) {
+      inrollen();
+    }
+    else if (knop3actief == 1 && uitgerold != 1) {
+      uitrollen();
+    }
   }
-  else if (knop3actief == 1 && uitgerold != 1) {
-    uitrollen();
-  }
+  
   if (loopcounter % 10 == 1) { //Every 1s
     berekenAfstand();
   }
@@ -191,8 +195,8 @@ void loop() {
 
     i++;
     tijdTemperatuur += temperatuur;
-    if (i == 10) {
-      gemTemperatuur = (tijdTemperatuur / 10);
+    if (i == 100) {
+      gemTemperatuur = (tijdTemperatuur / 100);
       tijdTemperatuur = 0;
       i = 0;
       sendCommand("temperature", gemTemperatuur);
@@ -263,8 +267,8 @@ void inrollen() {
 }
 
 void uitrollen() {
-  inofuitrollen = 1;
   ingerold = 0;
+  inofuitrollen = 1;
   digitalWrite(groeneLed, LOW);
   digitalWrite(rodeLed, HIGH);
   digitalWrite(geleLed, HIGH);
@@ -319,12 +323,16 @@ void processCommand(String command, int data) {
     maxRoll--;
   }
   if(command == "rollIn") {
-    if(uitgerold == 1) {
+    if(ingerold != 1) {
+      knop2actief = 1;
+      knop3actief = 0;
       inrollen();
     }
   }
   if(command == "rollOut") {
-    if(ingerold == 1) {
+    if(uitgerold != 1) {
+      knop2actief = 0;
+      knop3actief = 1;
       uitrollen();
     }
   }
