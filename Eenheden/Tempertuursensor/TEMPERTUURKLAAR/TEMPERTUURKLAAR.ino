@@ -105,11 +105,11 @@ void loop() {
     module.clearDisplay();
     if (module.getButtons() == 64 && autonoom == 0) {
       basisTemperatuur--;
-      
+      buttonPressed = 4;
     }
     else if(module.getButtons() == 128 && autonoom == 0) {
       basisTemperatuur++;
-      
+      buttonPressed = 4;
     }
     else {
       buttonPressed = module.getButtons();
