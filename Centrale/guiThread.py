@@ -37,69 +37,71 @@ class GUIThread (threading.Thread):
 
 	def createPage(self, id):
 		name = self.main.configHandler.get("COM" + str(id) + "name")
-		if name != None:
-			self.port = self.main.serialThread.ports[id]
+		if name == None or name == "":
+			name = "Eenheid"
+			
+		self.port = self.main.serialThread.ports[id]
 
-			while(len(self.pages) <= id):
-				self.pages.append(None)
+		while(len(self.pages) <= id):
+			self.pages.append(None)
 
-			page = ttk.Frame(self.tabs)
-			page.id = id
+		page = ttk.Frame(self.tabs)
+		page.id = id
 
-			#Name
-			page.title = StringVar()
-			page.title.set("Aan het laden...")
-			page.titleLabel = Label(page, textvariable=page.title, font=self.boldFont, anchor="nw")
-			page.titleLabel.place(x=0, y=330)
+		#Name
+		page.title = StringVar()
+		page.title.set("Aan het laden...")
+		page.titleLabel = Label(page, textvariable=page.title, font=self.boldFont, anchor="nw")
+		page.titleLabel.place(x=0, y=330)
 
-			page.newName = StringVar()
-			page.newName.set(name)
-			page.newNameEntry = tk.Entry(page, textvariable=page.newName, width=20)
-			self.placeItem(page.newNameEntry, 0, 0)
+		page.newName = StringVar()
+		page.newName.set(name)
+		page.newNameEntry = tk.Entry(page, textvariable=page.newName, width=20)
+		self.placeItem(page.newNameEntry, 0, 0)
 
-			page.setNewName = tk.Button(page, text='Opslaan', width=16, command=lambda: self.setTitle(page, page.newName.get()))
-			self.placeItem(page.setNewName, 1, 0)
+		page.setNewName = tk.Button(page, text='Opslaan', width=16, command=lambda: self.setTitle(page, page.newName.get()))
+		self.placeItem(page.setNewName, 1, 0)
 
-			#Base values and roll buttons
-			page.baseVal = IntVar()
+		#Base values and roll buttons
+		page.baseVal = IntVar()
 
-			page.rollStatus = StringVar()
-			page.rollStatusLabel = Label(page, textvariable=page.rollStatus, font=self.normalFont, anchor="nw")
-			self.placeItem(page.rollStatusLabel, 5, 0)
+		page.rollStatus = StringVar()
+		page.rollStatusLabel = Label(page, textvariable=page.rollStatus, font=self.normalFont, anchor="nw")
+		self.placeItem(page.rollStatusLabel, 5, 0)
 
-			#Autonoom mode
-			page.mode = StringVar()
-			page.modeLabel = Label(page, textvariable=page.mode, font=self.normalFont, anchor="nw")
-			self.placeItem(page.modeLabel, 0, 1)
+		#Autonoom mode
+		page.mode = StringVar()
+		page.modeLabel = Label(page, textvariable=page.mode, font=self.normalFont, anchor="nw")
+		self.placeItem(page.modeLabel, 0, 1)
 
-			page.changeMode = tk.Button(page, text='Verander mode', width=16, command=lambda: self.port.sendCommand("autonoom", 1 if page.autonoom == 0 else 0))
-			self.placeItem(page.changeMode, 5, 1)
+		page.changeMode = tk.Button(page, text='Verander mode', width=16, command=lambda: self.port.sendCommand("autonoom", 1 if page.autonoom == 0 else 0))
+		self.placeItem(page.changeMode, 5, 1)
 
-			page.autonoom = 0
-			self.addBaseInput(page)
+		page.autonoom = 0
+		self.addBaseInput(page)
 
-			#Max roll distance
-			page.maxRoll = IntVar()
-			page.maxRollTitleLabel = Label(page, text="Uitrol afstand", font=self.normalFont, anchor="nw")
-			page.maxRollLabel = Label(page, textvariable=page.maxRoll, font=self.normalFont, anchor="nw")
-			page.incMaxRoll = tk.Button(page, text='Omhoog', width=16, command=lambda: self.port.sendCommand("incMaxRoll", 0))
-			page.decMaxRoll = tk.Button(page, text='Omlaag', width=16, command=lambda: self.port.sendCommand("decMaxRoll", 0))
-			self.placeItem(page.maxRollTitleLabel, 0, 2)
-			self.placeItem(page.maxRollLabel, 1, 2)
-			self.placeItem(page.incMaxRoll, 2, 2)
-			self.placeItem(page.decMaxRoll, 3, 2)
+		#Max roll distance
+		page.maxRoll = IntVar()
+		page.maxRollTitleLabel = Label(page, text="Uitrol afstand", font=self.normalFont, anchor="nw")
+		page.maxRollLabel = Label(page, textvariable=page.maxRoll, font=self.normalFont, anchor="nw")
+		page.incMaxRoll = tk.Button(page, text='Omhoog', width=16, command=lambda: self.port.sendCommand("incMaxRoll", 0))
+		page.decMaxRoll = tk.Button(page, text='Omlaag', width=16, command=lambda: self.port.sendCommand("decMaxRoll", 0))
+		self.placeItem(page.maxRollTitleLabel, 0, 2)
+		self.placeItem(page.maxRollLabel, 1, 2)
+		self.placeItem(page.incMaxRoll, 2, 2)
+		self.placeItem(page.decMaxRoll, 3, 2)
 
-			self.tabs.add(page, text=name)
-			self.pages[id] = page
+		self.tabs.add(page, text=name)
+		self.pages[id] = page
 
-			#Graph
-			page.isGraphSet = 0
-			page.i = 1
-			page.y2 = 280
-			page.x1 = 40
-			page.x2 = 40
+		#Graph
+		page.isGraphSet = 0
+		page.i = 1
+		page.y2 = 280
+		page.x1 = 40
+		page.x2 = 40
 
-			return page
+		return page
 
 	def addBaseInput(self, page):
 		page.baseValLabel = Label(page, textvariable=page.baseVal, font=self.normalFont, anchor="nw")
