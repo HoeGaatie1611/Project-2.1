@@ -45,7 +45,7 @@ class GUIThread (threading.Thread):
 
 			page = ttk.Frame(self.tabs)
 			page.id = id
-			
+
 			#Name
 			page.title = StringVar()
 			page.title.set("Aan het laden...")
@@ -91,14 +91,14 @@ class GUIThread (threading.Thread):
 
 			self.tabs.add(page, text=name)
 			self.pages[id] = page
-			
+
 			#Graph
 			page.isGraphSet = 0
 			page.i = 1
 			page.y2 = 280
 			page.x1 = 40
 			page.x2 = 40
-			
+
 			return page
 
 	def addBaseInput(self, page):
@@ -135,6 +135,8 @@ class GUIThread (threading.Thread):
 		item.place(x=(5 + 130 * colomn), y=(390 + 30 * row))
 
 	def setTitle(self, page, title):
+		if(not title or title.isspace()):
+			title = "Eenheid"
 		self.tabs.tab(page, text=title)
 		self.main.configHandler.set("COM" + str(page.id) + "name", title)
 
@@ -155,13 +157,13 @@ class GUIThread (threading.Thread):
 			page.canvas.pack(expand=NO, fill=BOTH)
 			page.canvas.create_line(40,280,1100,280, width=2) # x-axis
 			page.canvas.create_line(40,20,40,280, width=2)    # y-axis
-			
+
 			## Hier wordt het aantal minuten weergegeven op de x-as
 			for i in range(21):
 				x = 40 + (i * 53)
 				page.canvas.create_line(x,280,x,20, width=1, dash=(2,5))
 				page.canvas.create_text(x,280, text='%d min'% (i), anchor=N)
-				
+
 			## Hier wordt de temperatuur weergegeven op de y-as.
 			for i in range(10):
 				y = 254 - (i * 26)
@@ -175,12 +177,12 @@ class GUIThread (threading.Thread):
 			page.i = 1
 			page.y2 = 280
 			page.canvas.delete('temp') # only delete items tagged as temp
-			
+
 		if(page.i == 1):
 			page.y2 = 280
 			page.x2 = 40
 			page.x1 = 40
-			
+
 		y1 = page.y2
 		page.x1 = page.x2
 		page.y2 = 280 - (((data / 4) * 26) - 26)
@@ -195,18 +197,18 @@ class GUIThread (threading.Thread):
 			page.canvas.pack(expand=NO, fill=BOTH)
 			page.canvas.create_line(60,280,1120,280, width=2) # x-axis
 			page.canvas.create_line(60,20,60,280, width=2)    # y-axis
-			
+
 			for i in range(21):
 				x = 60 + (i * 53)
 				page.canvas.create_line(x,280,x,20, width=1, dash=(2,5))
 				page.canvas.create_text(x,280, text='%d min'% (i), anchor=N)
-				
+
 			## Hier wordt de temperatuur weergegeven op de y-as.
 			for i in range(10):
 				y = 254 - (i * 26)
 				page.canvas.create_line(1120,y,60,y, width=1, dash=(2,5))
 				page.canvas.create_text(30,y, text='%d Rem'% (15 + (i * 15)), anchor=N, font=("Times New Roman", 7))
-				
+
 			canvas2 = Canvas(page, width = 650, height = 200)
 			canvas2.pack(side = RIGHT, anchor = SE)
 			page.image = PhotoImage(file="remandTabel.gif", width = 600, height = 200)
@@ -228,10 +230,10 @@ class GUIThread (threading.Thread):
 		page.x2 = 60 + (53*page.i)
 		page.canvas.create_line(page.x1, y1, page.x2, page.y2, fill='blue', tags='temp', width=2)
 		page.i += 1
-		
+
 	def updateModuleAmount(self):
 		amountPages = self.pageCount()
-		
+
 		if(amountPages == 1):
 			self.sensorText.set("Er is op dit moment " + str(amountPages) + " eenheid aangesloten.")
 		else:
@@ -260,7 +262,7 @@ class GUIThread (threading.Thread):
 		self.tabs.add(mainPage, text="    Home    ")
 
 		self.sensorText = StringVar()
-		
+
 		self.mainCanvas = Canvas(mainPage, width = 1000, height = 500)
 		self.mainCanvas.pack()
 		self.logo = PhotoImage(file="logo.gif")
@@ -268,10 +270,10 @@ class GUIThread (threading.Thread):
 		self.mainCanvas.create_text(500,20,anchor=N,text="De Centrale", font=("Times New Roman", 30))
 		self.mainCanvas.create_text(500,150,anchor=N,text="Ontwikkeld door Johto IT in opdracht van Zeng LTD", font=("Times New Roman", 15))
 		self.mainCanvas.create_text(500,450,anchor=N,text="'The very best, like no one ever was'", font=("Times New Roman", 8, "italic"))
-		
+
 		self.sensorLabel = Label(mainPage, textvariable=self.sensorText, font=("Times New Roman", 15), anchor=N)
 		self.sensorLabel.place(x=425, y=90)
-		
+
 		self.tabs.pack(expand=1, fill="both")
 
 		#Fixedwindow / niet resizable
