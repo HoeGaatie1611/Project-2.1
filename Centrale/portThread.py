@@ -31,6 +31,8 @@ class PortThread (threading.Thread):
 
 		except:
 			self.disconnect() # If could not read command assume disconnect
+			self.main.guiThread.amountSensors()
+			self.main.guiThread.setGraphOff()
 
 	def sendCommand(self, command, data):
 		commandString = command + " " + str(data)
