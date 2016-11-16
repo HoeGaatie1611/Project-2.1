@@ -14,10 +14,10 @@ class PortThread (threading.Thread):
 	def disconnect(self):
 		self.main.serialThread.disconnect(self.id)
 		self.main.guiThread.removePage(self.id)
-		self.main.guiThread.updateSensorAmount()
+		self.main.guiThread.updateModuleAmount()
 			
 	def readCommand(self):
-		#try:
+		try:
 			length = ord(self.port.read(1).decode('utf-8')) # Get command length
 			commandString = self.port.read(length).decode('utf-8') # Get entire command with length
 			if self.isInt(commandString.split(" ")[1]):
@@ -29,8 +29,8 @@ class PortThread (threading.Thread):
 			threading.Timer(0.01, self.readCommand).start() # Recursive
 			return
 
-		#except:
-		#	self.disconnect() # If could not read command assume disconnect
+		except:
+			self.disconnect() # If could not read command assume disconnect
 
 	def sendCommand(self, command, data):
 		commandString = command + " " + str(data)
@@ -46,5 +46,5 @@ class PortThread (threading.Thread):
 
 	def run(self):
 		self.main.guiThread.createPage(self.id)
-		self.main.guiThread.updateSensorAmount()
+		self.main.guiThread.updateModuleAmount()
 		self.readCommand()

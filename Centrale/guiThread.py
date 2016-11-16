@@ -48,7 +48,7 @@ class GUIThread (threading.Thread):
 			
 			#Name
 			page.title = StringVar()
-			page.title.set("Loading...")
+			page.title.set("Aan het laden...")
 			page.titleLabel = Label(page, textvariable=page.title, font=self.boldFont, anchor="nw")
 			page.titleLabel.place(x=0, y=330)
 
@@ -72,7 +72,7 @@ class GUIThread (threading.Thread):
 			page.modeLabel = Label(page, textvariable=page.mode, font=self.normalFont, anchor="nw")
 			self.placeItem(page.modeLabel, 0, 1)
 
-			page.changeMode = tk.Button(page, text='Change mode', width=16, command=lambda: self.port.sendCommand("autonoom", 1 if page.autonoom == 0 else 0))
+			page.changeMode = tk.Button(page, text='Verander mode', width=16, command=lambda: self.port.sendCommand("autonoom", 1 if page.autonoom == 0 else 0))
 			self.placeItem(page.changeMode, 5, 1)
 
 			page.autonoom = 0
@@ -80,10 +80,10 @@ class GUIThread (threading.Thread):
 
 			#Max roll distance
 			page.maxRoll = IntVar()
-			page.maxRollTitleLabel = Label(page, text="Max roll distance", font=self.normalFont, anchor="nw")
+			page.maxRollTitleLabel = Label(page, text="Uitrol afstand", font=self.normalFont, anchor="nw")
 			page.maxRollLabel = Label(page, textvariable=page.maxRoll, font=self.normalFont, anchor="nw")
-			page.incMaxRoll = tk.Button(page, text='Increase', width=16, command=lambda: self.port.sendCommand("incMaxRoll", 0))
-			page.decMaxRoll = tk.Button(page, text='Decrease', width=16, command=lambda: self.port.sendCommand("decMaxRoll", 0))
+			page.incMaxRoll = tk.Button(page, text='Omhoog', width=16, command=lambda: self.port.sendCommand("incMaxRoll", 0))
+			page.decMaxRoll = tk.Button(page, text='Omlaag', width=16, command=lambda: self.port.sendCommand("decMaxRoll", 0))
 			self.placeItem(page.maxRollTitleLabel, 0, 2)
 			self.placeItem(page.maxRollLabel, 1, 2)
 			self.placeItem(page.incMaxRoll, 2, 2)
@@ -103,19 +103,19 @@ class GUIThread (threading.Thread):
 
 	def addBaseInput(self, page):
 		page.baseValLabel = Label(page, textvariable=page.baseVal, font=self.normalFont, anchor="nw")
-		page.incBase = tk.Button(page, text='Increase', width=16, command=lambda: self.port.sendCommand("incBase", 0))
-		page.decBase = tk.Button(page, text='Decrease', width=16, command=lambda: self.port.sendCommand("decBase", 0))
+		page.incBase = tk.Button(page, text='Omhoog', width=16, command=lambda: self.port.sendCommand("incBase", 0))
+		page.decBase = tk.Button(page, text='Omlaag', width=16, command=lambda: self.port.sendCommand("decBase", 0))
 		self.placeItem(page.baseValLabel, 1, 1)
 		self.placeItem(page.incBase, 2, 1)
 		self.placeItem(page.decBase, 3, 1)
-		page.mode.set("Mode: Sensor")
+		page.mode.set("Sensorisch")
 
 	def addRollInput(self, page):
-		page.rollIn = tk.Button(page, text='Roll in', width=16, command=lambda: self.port.sendCommand("rollIn", 0))
-		page.rollOut = tk.Button(page, text='Roll out', width=16, command=lambda: self.port.sendCommand("rollOut", 0))
+		page.rollIn = tk.Button(page, text='Inrollen', width=16, command=lambda: self.port.sendCommand("rollIn", 0))
+		page.rollOut = tk.Button(page, text='Uitrollen', width=16, command=lambda: self.port.sendCommand("rollOut", 0))
 		self.placeItem(page.rollIn, 2, 1)
 		self.placeItem(page.rollOut, 3, 1)
-		page.mode.set("Mode: Manual")
+		page.mode.set("Handmatig")
 
 	def removeBaseInput(self, page):
 		try:
@@ -142,7 +142,7 @@ class GUIThread (threading.Thread):
 		page = self.pages[portThread.id]
 
 		if type == "temperature":
-			page.title.set("Temperature")
+			page.title.set("Temperatuur")
 
 		elif type == "remand":
 			page.title.set("Remand")
@@ -229,13 +229,13 @@ class GUIThread (threading.Thread):
 		page.canvas.create_line(page.x1, y1, page.x2, page.y2, fill='blue', tags='temp', width=2)
 		page.i += 1
 		
-	def updateSensorAmount(self):
+	def updateModuleAmount(self):
 		amountPages = self.pageCount()
 		
 		if(amountPages == 1):
-			self.sensorText.set("Er is op dit moment: " + str(amountPages) + " sensor aangesloten.")
+			self.sensorText.set("Er is op dit moment " + str(amountPages) + " eenheid aangesloten.")
 		else:
-			self.sensorText.set("Er zijn op dit moment: " + str(amountPages) + " sensoren aangesloten.")
+			self.sensorText.set("Er zijn op dit moment " + str(amountPages) + " eenheden aangesloten.")
 
 	def loadGUI(self):
 		pages = []
