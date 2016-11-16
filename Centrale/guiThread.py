@@ -34,10 +34,8 @@ class GUIThread (threading.Thread):
 	def removePage(self, id):
 		self.pages[id].destroy()
 		self.pages[id] = None
-		self.amountPagesActive -= 1
 
 	def createPage(self, id):
-		self.amountPagesActive += 1
 		name = self.main.configHandler.get("COM" + str(id) + "name")
 		if name != None:
 			self.port = self.main.serialThread.ports[id]
@@ -47,6 +45,7 @@ class GUIThread (threading.Thread):
 
 			page = ttk.Frame(self.tabs)
 			page.id = id
+			
 			#Name
 			page.title = StringVar()
 			page.title.set("Loading...")
@@ -92,6 +91,14 @@ class GUIThread (threading.Thread):
 
 			self.tabs.add(page, text=name)
 			self.pages[id] = page
+			
+			#Graph
+			page.isGraphSet = 0
+			page.i = 1
+			page.y2 = 280
+			page.x1 = 40
+			page.x2 = 40
+			
 			return page
 
 	def addBaseInput(self, page):
@@ -139,22 +146,22 @@ class GUIThread (threading.Thread):
 
 		elif type == "remand":
 			page.title.set("Remand")
-	def setGraphOff(self):
-		self.isGraphSet = 0
 
 	def createTempGraph(self, page):
-		if(self.isGraphSet == 0):
+		if(page.isGraphSet == 0):
 			## Creates lines and graph
-			self.isGraphSet = 1
+			page.isGraphSet = 1
 			page.canvas = Canvas(page, width=150, height=320, bg='white') # 0,0 is top left corner
 			page.canvas.pack(expand=NO, fill=BOTH)
 			page.canvas.create_line(40,280,1100,280, width=2) # x-axis
 			page.canvas.create_line(40,20,40,280, width=2)    # y-axis
+			
 			## Hier wordt het aantal minuten weergegeven op de x-as
 			for i in range(21):
 				x = 40 + (i * 53)
 				page.canvas.create_line(x,280,x,20, width=1, dash=(2,5))
 				page.canvas.create_text(x,280, text='%d min'% (i), anchor=N)
+				
 			## Hier wordt de temperatuur weergegeven op de y-as.
 			for i in range(10):
 				y = 254 - (i * 26)
@@ -163,68 +170,72 @@ class GUIThread (threading.Thread):
 				page.canvas.create_text(20,y, text='%d°'% (5 + (i * 5)), anchor=N)
 
 	def updateTempGraph(self, page, data):
-		if self.i == 21:
+		if page.i == 21:
 	        # new frame
-			self.i = 1
-			self.y2 = 280
+			page.i = 1
+			page.y2 = 280
 			page.canvas.delete('temp') # only delete items tagged as temp
-		if(self.i == 1):
-			self.y2 = 280
-			self.x2 = 40
-			self.x1 = 40
-		y1 = self.y2
-		self.x1 = self.x2
-		self.y2 = 280 - (((data / 4) * 26) - 26)
-		self.x2 = 40 + (53*self.i)
-		page.canvas.create_line(self.x1, y1, self.x2, self.y2, fill='blue', tags='temp', width=2)
-		self.i += 1
+			
+		if(page.i == 1):
+			page.y2 = 280
+			page.x2 = 40
+			page.x1 = 40
+			
+		y1 = page.y2
+		page.x1 = page.x2
+		page.y2 = 280 - (((data / 4) * 26) - 26)
+		page.x2 = 40 + (53*page.i)
+		page.canvas.create_line(page.x1, y1, page.x2, page.y2, fill='blue', tags='temp', width=2)
+		page.i += 1
 
 	def createRemandObjects(self, page):
-		if(self.isGraphSet == 0):
-			self.isGraphSet = 1
+		if(page.isGraphSet == 0):
+			page.isGraphSet = 1
 			page.canvas = Canvas(page, width=150, height=320, bg='white')
 			page.canvas.pack(expand=NO, fill=BOTH)
 			page.canvas.create_line(60,280,1120,280, width=2) # x-axis
 			page.canvas.create_line(60,20,60,280, width=2)    # y-axis
+			
 			for i in range(21):
 				x = 60 + (i * 53)
 				page.canvas.create_line(x,280,x,20, width=1, dash=(2,5))
 				page.canvas.create_text(x,280, text='%d min'% (i), anchor=N)
+				
 			## Hier wordt de temperatuur weergegeven op de y-as.
 			for i in range(10):
 				y = 254 - (i * 26)
 				page.canvas.create_line(1120,y,60,y, width=1, dash=(2,5))
 				page.canvas.create_text(30,y, text='%d Rem'% (15 + (i * 15)), anchor=N, font=("Times New Roman", 7))
+				
 			canvas2 = Canvas(page, width = 650, height = 200)
 			canvas2.pack(side = RIGHT, anchor = SE)
-			self.image = PhotoImage(file="remandTabel.gif", width = 600, height = 200)
-			canvas2.create_image(300,100, image=self.image)
+			page.image = PhotoImage(file="remandTabel.gif", width = 600, height = 200)
+			canvas2.create_image(300,100, image=page.image)
 
 	def updateRemandGraph(self, page, data):
-		if self.i == 21:
+		if page.i == 21:
 	        # new frame
-			self.i = 1
-			self.y2 = 280
+			page.i = 1
+			page.y2 = 280
 			page.canvas.delete('temp') # only delete items tagged as temp
-		if(self.i == 1):
-			self.y2 = 280
-			self.x2 = 60
-			self.x1 = 60
-		y1 = self.y2
-		self.x1 = self.x2
-		self.y2 = 280 - (((data / 15) * 26))
-		self.x2 = 60 + (53*self.i)
-		page.canvas.create_line(self.x1, y1, self.x2, self.y2, fill='blue', tags='temp', width=2)
-		self.i += 1
-	def amountSensors(self):
-		self.mainCanvas.delete('sensorText')
-		amountPages = str(self.amountPagesActive - 1)
-		if(self.amountPagesActive - 1 == 1):
-			text = "Er is op dit moment: " + amountPages + " sensor aangesloten."
-			self.mainCanvas.create_text(500,90,anchor=N,text=text , font=("Times New Roman", 15), tags="sensorText")
+		if(page.i == 1):
+			page.y2 = 280
+			page.x2 = 60
+			page.x1 = 60
+		y1 = page.y2
+		page.x1 = page.x2
+		page.y2 = 280 - (((data / 15) * 26))
+		page.x2 = 60 + (53*page.i)
+		page.canvas.create_line(page.x1, y1, page.x2, page.y2, fill='blue', tags='temp', width=2)
+		page.i += 1
+		
+	def updateSensorAmount(self):
+		amountPages = self.pageCount()
+		
+		if(amountPages == 1):
+			self.sensorText.set("Er is op dit moment: " + str(amountPages) + " sensor aangesloten.")
 		else:
-			text = "Er zijn op dit moment: " + amountPages + " sensoren aangesloten."
-			self.mainCanvas.create_text(500,90,anchor=N,text=text , font=("Times New Roman", 15), tags="sensorText")
+			self.sensorText.set("Er zijn op dit moment: " + str(amountPages) + " sensoren aangesloten.")
 
 	def loadGUI(self):
 		pages = []
@@ -248,6 +259,8 @@ class GUIThread (threading.Thread):
 		mainPage = ttk.Frame(self.tabs)
 		self.tabs.add(mainPage, text="    Home    ")
 
+		self.sensorText = StringVar()
+		
 		self.mainCanvas = Canvas(mainPage, width = 1000, height = 500)
 		self.mainCanvas.pack()
 		self.logo = PhotoImage(file="logo.gif")
@@ -255,10 +268,11 @@ class GUIThread (threading.Thread):
 		self.mainCanvas.create_text(500,20,anchor=N,text="De Centrale", font=("Times New Roman", 30))
 		self.mainCanvas.create_text(500,150,anchor=N,text="Ontwikkeld door Johto IT in opdracht van Zeng LTD", font=("Times New Roman", 15))
 		self.mainCanvas.create_text(500,450,anchor=N,text="'The very best, like no one ever was'", font=("Times New Roman", 8, "italic"))
+		
+		self.sensorLabel = Label(mainPage, textvariable=self.sensorText, font=("Times New Roman", 15), anchor=N)
+		self.sensorLabel.place(x=425, y=90)
+		
 		self.tabs.pack(expand=1, fill="both")
-
-		#Favicon / map zelf aanpassen aan path
-		#self.root.iconbitmap(r'\Project2.1\Project-2.1\Python Code\favicon.ico')
 
 		#Fixedwindow / niet resizable
 		self.root.resizable(width=False, height=False)
@@ -271,15 +285,6 @@ class GUIThread (threading.Thread):
 	def __init__(self, main):
 		self.main = main
 		threading.Thread.__init__(self)
-		self.isGraphSet = 0
-		self.i = 1
-		self.y2 = 280
-		self.x1 = 40
-		self.x2 = 40
-		self.image = 0
-		self.logo = 0
-		self.mainCanvas = None
-		self.amountPagesActive = 0
 
 	def run(self):
 		self.loadGUI()
