@@ -20,9 +20,9 @@ class CommandHandler ():
 			if(data == 0):
 				page.rollStatus.set("Bezig")
 			elif(data == 1):
-				page.rollStatus.set("Uitgerold")
-			elif(data == 2):
 				page.rollStatus.set("Ingerold")
+			elif(data == 2):
+				page.rollStatus.set("Uitgerold")
 
 		elif(command == "autonoomPressed"):
 			if(data == 0 and page.autonoom == 1):

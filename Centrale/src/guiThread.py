@@ -213,7 +213,7 @@ class GUIThread (threading.Thread):
 
 			canvas2 = Canvas(page, width = 650, height = 200)
 			canvas2.pack(side = RIGHT, anchor = SE)
-			page.image = PhotoImage(file="remandTabel.gif", width = 600, height = 200)
+			page.image = PhotoImage(file="src/remandTabel.gif", width = 600, height = 200)
 			canvas2.create_image(300,100, image=page.image)
 
 	def updateRemandGraph(self, page, data):
@@ -267,7 +267,7 @@ class GUIThread (threading.Thread):
 
 		self.mainCanvas = Canvas(mainPage, width = 1000, height = 500)
 		self.mainCanvas.pack()
-		self.logo = PhotoImage(file="logo.gif")
+		self.logo = PhotoImage(file="src/logo.gif")
 		self.mainCanvas.create_image(500,300, image=self.logo)
 		self.mainCanvas.create_text(500,20,anchor=N,text="De Centrale", font=("Times New Roman", 30))
 		self.mainCanvas.create_text(500,150,anchor=N,text="Ontwikkeld door Johto IT in opdracht van Zeng LTD", font=("Times New Roman", 15))

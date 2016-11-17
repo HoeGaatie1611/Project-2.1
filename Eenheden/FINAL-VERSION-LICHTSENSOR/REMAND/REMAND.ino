@@ -330,11 +330,15 @@ void processCommand(String command, int data) {
   }
   if (command == "rollIn") {
     if (uitgerold == 1) {
+	  knop2actief = 1;
+      knop3actief = 0;
       inrollen();
     }
   }
   if (command == "rollOut") {
     if (ingerold == 1) {
+	  knop2actief = 0;
+      knop3actief = 1;
       uitrollen();
     }
   }
