@@ -292,7 +292,7 @@ void sendCommand(String command, int data) {
   Serial.write(commandString.length());
   Serial.print(commandString);
 }
-// Een functie om een commando 
+// Een interrupt om binnenkomende commando's te ontvangen.
 void serialEvent() {
   String command = "";
   bool commandDone = false;

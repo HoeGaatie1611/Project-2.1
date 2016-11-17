@@ -7,6 +7,7 @@ from guiThread import GUIThread
 
 class Main ():
 	
+	#Initialize all threads, and run the different parts of the program in parallel
 	def startThreads(self):
 		self.commandHandler = CommandHandler(self)
 		self.configHandler = ConfigHandler(self)
@@ -14,7 +15,7 @@ class Main ():
 		self.guiThread = GUIThread(self)
 		self.guiThread.start()
 		
-		time.sleep(1)
+		time.sleep(1) # Wait for the GUI thread to initialize the GUI
 		
 		self.serialThread = SerialThread(self)
 		self.serialThread.start()

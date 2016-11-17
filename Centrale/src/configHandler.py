@@ -2,6 +2,7 @@ import json
 
 class ConfigHandler ():
 
+	#Save a setting to the configuration file
 	def set(self, key, value):
 		config = {}
 		with open('src/config.json', 'r') as f:
@@ -12,6 +13,7 @@ class ConfigHandler ():
 		with open('src/config.json', 'w') as f:
 			json.dump(config, f)
 		
+	#Get a setting from the configuration file
 	def get(self, key):
 		try:
 			config = {}

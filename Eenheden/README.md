@@ -1,2 +1,0 @@
-# Arduino Code
-Hier zal alle code van de Arduino Uno komen. Dit wordt geschreven in Arduino taal, en uitgevoerd in de Arduino software. Uiteindelijk moet een deel van de code uitgevoerd worden via de Python GUI. 

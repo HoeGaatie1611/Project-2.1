@@ -1,6 +1,7 @@
 
 class CommandHandler ():
 
+	#Process an incoming command from a module
 	def processCommand(self, portThread, command, data):
 		page = self.main.guiThread.pages[portThread.id]
 		Tempset = 0

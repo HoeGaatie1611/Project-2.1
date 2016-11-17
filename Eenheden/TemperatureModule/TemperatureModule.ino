@@ -7,6 +7,7 @@
   @version 7.2 08/11/2016
 */
 #include <TM1638.h>
+
 // Initialiseer de poorten
 const int groeneLed = 2;
 const int geleLed = 3;
@@ -21,8 +22,11 @@ const int clockpin = 10;
 const int knop1 = 11;
 const int knop2 = 12;
 const int knop3 = 13;
+
+// Initialiseer de module voor de Led&Key
 TM1638 module(datapin, clockpin, strobepin);
 
+// Variabelen om te kijken welke knoppen ingedrukt zijn
 int knop1pressed = 0;
 int knop2pressed = 0;
 int knop3pressed = 0;
@@ -43,6 +47,7 @@ int knop2actief = 0;
 int knop3actief = 0;
 int moduleSet = 0;
 int temperatuur = 0;
+
 // Variabelen voor de Led&Key display
 int buttons = 0;
 int startValue = 0;
@@ -52,6 +57,7 @@ int buttonChanged = 0;
 int isError = 0;
 int incOrDec = 0;
 int incOrDecPressed = 0;
+int maxRoll = 50;
 
 // Start initialisatie loop
 void setup() {
@@ -63,13 +69,14 @@ void setup() {
   }
   pinMode( triggerPort, OUTPUT );
   pinMode( echoPort, INPUT );
-
-  // Definieer de LED&KEY d.m.v. de import module
-
 }
 
 // Hier begint de loop
 void loop() {
+  sendCommand("baseTemperature", basisTemperatuur);
+  sendCommand("rollStatus", ingerold ? 1 : (uitgerold ? 2 : 0)); // 0 in bezig, 1 = ingerold, 2 = uitgerold
+  sendCommand("maxRoll", maxRoll);
+  
   if (autonoom == 0) {
     digitalWrite(autonoomLed, HIGH);
   }
@@ -100,19 +107,20 @@ void loop() {
     module.clearDisplay();
     if (module.getButtons() == 64 && autonoom == 0) {
       basisTemperatuur--;
-      
+      buttonPressed = 4;
     }
     else if(module.getButtons() == 128 && autonoom == 0) {
       basisTemperatuur++;
-      
+      buttonPressed = 4;
     }
     else {
       buttonPressed = module.getButtons();
     }
   }
-  // Hier wordt de naam van de data op het scherm getoond
+  // Hier wordt de naam van de data op het scherm getoond, 1,2,4,8 etc.. Worden weergegeven door de binaire code van de knoppen.
   if (buttonPressed == 1) {
     String gemTemp = String(gemTemperatuur);
+    module.clearDisplay();
     module.setDisplayToString("GEMI " + gemTemp);
   }
   if (buttonPressed == 2) {
@@ -122,6 +130,7 @@ void loop() {
     }
     else if (isError == 0) {
       String distance = String(afstand);
+      module.clearDisplay();
       module.setDisplayToString("AFST " + distance);
     }
   }
@@ -147,8 +156,8 @@ void loop() {
       module.setDisplayToString("METEN");
     }
   }
-
-  //Input
+  
+  //Lees de knoppen van de autonome modus en zet deze om naar de variabelen
   if (digitalRead(knop2) == 1 && autonoom == 1 && inofuitrollen == 0) {
     if (!knop2pressed) {
       knop2pressed = 1;
@@ -168,15 +177,16 @@ void loop() {
     knop3pressed = 0;
   }
 
-  if (knop2actief == 1 && ingerold != 1 ) {
-    inrollen();
+  if (autonoom == 1) {
+    if (knop2actief == 1 && ingerold != 1 ) {
+      inrollen();
+    }
+    else if (knop3actief == 1 && uitgerold != 1) {
+      uitrollen();
+    }
   }
-  else if (knop3actief == 1 && uitgerold != 1) {
-    uitrollen();
-  }
+  // Om de 10 loops - dus 10x 100 miliseconde = 1 seconde - wordt de afstand berekend.
   if (loopcounter % 10 == 1) { //Every 1s
-    sendCommand("baseTemperature", basisTemperatuur);
-    sendCommand("inofuitrollen", inofuitrollen);
     berekenAfstand();
   }
 
@@ -185,11 +195,10 @@ void loop() {
     float voltage = (sensorWaarde / 1024.0) * 5;
     temperatuur = ((voltage * 1000) - 500) / 10;
 
-
     i++;
     tijdTemperatuur += temperatuur;
-    if (i == 10) {
-      gemTemperatuur = (tijdTemperatuur / 10);
+    if (i == 100) {
+      gemTemperatuur = (tijdTemperatuur / 100);
       tijdTemperatuur = 0;
       i = 0;
       sendCommand("temperature", gemTemperatuur);
@@ -206,7 +215,7 @@ void loop() {
   }
 
 
-
+  // Als de rolluiken zijn ingerold moet de groene led branden en bij uitgerold moet de rode led branden.
   if (ingerold == 1) {
     digitalWrite(groeneLed, HIGH);
     digitalWrite(geleLed, LOW);
@@ -223,7 +232,7 @@ void loop() {
     delay(100);
   }
 }
-
+// Functie om de afstand te berekenen d.m.v. de afstandsensor en de bijbehorende formule.
 void berekenAfstand() {
   digitalWrite(triggerPort, LOW);      // Trigger output op 0 zetten.
   digitalWrite(triggerPort, HIGH);    // Stuur nu een signaal van 10 ms naar de triggerport.
@@ -244,7 +253,7 @@ void berekenAfstand() {
   }
 }
 
-
+// Functie om het inrollen te starten. Het groene ledje moet branden en de gele moet knipperen. Dit net zolang door doen tot de afstand behaald is.
 void inrollen() {
   uitgerold = 0;
   inofuitrollen = 1;
@@ -253,16 +262,15 @@ void inrollen() {
   digitalWrite(geleLed, HIGH);
   delay(50);
   digitalWrite(geleLed, LOW);
-  if (afstand > 50 && afstand != 0) {
+  if (afstand > maxRoll && afstand != 0) {
     ingerold = 1;
     inofuitrollen = 0;
-    sendCommand("ingerold", ingerold);
   }
 }
-
+// Functie om het inrollen te starten. Het rode ledje moet branden en de gele moet knipperen. Dit net zolang door doen tot de afstand behaald is.
 void uitrollen() {
-  inofuitrollen = 1;
   ingerold = 0;
+  inofuitrollen = 1;
   digitalWrite(groeneLed, LOW);
   digitalWrite(rodeLed, HIGH);
   digitalWrite(geleLed, HIGH);
@@ -271,14 +279,70 @@ void uitrollen() {
   if (afstand < 5 && afstand != 0) {
     uitgerold = 1;
     inofuitrollen = 0;
-    sendCommand("uitgerold", uitgerold);
   }
 }
-
+// Een functie om een commando te versturen naar de centrale.
 void sendCommand(String command, int data) {
   String commandString = command + " " + data;
 
   Serial.write(commandString.length());
   Serial.print(commandString);
+}
+// Een interrupt om binnenkomende commando's te ontvangen.
+void serialEvent() {
+  String command = "";
+  bool commandDone = false;
+  String dataString = "";
+  
+  while (Serial.available()) {
+    char inChar = (char)Serial.read();
+    
+    if((String) inChar == " ") {
+      commandDone = true;
+      continue;
+    }
+    if(!commandDone) {
+      command += inChar;
+    } else {
+      dataString += inChar;
+    }
+  }
+
+  processCommand(command, dataString.toInt());
+}
+// Een functie om een commando vanuit de centrale te verwerken.
+void processCommand(String command, int data) {
+  if(command == "incBase") {
+    basisTemperatuur++;
+  }
+  if(command == "decBase") {
+    basisTemperatuur--;
+  }
+  if(command == "incMaxRoll") {
+    maxRoll++;
+  }
+  if(command == "decMaxRoll") {
+    maxRoll--;
+  }
+  if(command == "rollIn") {
+    if(ingerold != 1) {
+      knop2actief = 1;
+      knop3actief = 0;
+      inrollen();
+    }
+  }
+  if(command == "rollOut") {
+    if(uitgerold != 1) {
+      knop2actief = 0;
+      knop3actief = 1;
+      uitrollen();
+    }
+  }
+  if(command == "autonoom") {
+    if(inofuitrollen == 0) {
+      autonoom = data;
+      sendCommand("autonoomPressed", autonoom);
+    }
+  }
 }
 
